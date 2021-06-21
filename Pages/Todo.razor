@@ -1,0 +1,40 @@
+﻿@page "/todo"
+<h3>Things to do today: <span class="text-info">@todos.Count(todo => !todo.isDone)</span></h3>
+<ul style="list-style:none">
+    @foreach (var todo in todos)
+    {   
+        <li>
+        <input type="checkbox" @bind="todo.isDone"  /> 
+        #<span class="text-danger">@todo.ID</span>
+        <input @bind="todo.Title" />
+        <button @onclick="@(() => {RemoveTodo(todo);})" type="button" class="btn btn-danger btn-sm">Delete</button>
+        </li>
+    }
+</ul>
+<input placeolder="Something to do" @bind="newTodo"/>
+<button @onclick="AddTodo" class="btn btn-info">Add todo</button>
+@code {
+private List<TodoItem> todos = new List<TodoItem>();
+private string newTodo;
+private int currentID = 1;
+    private void AddTodo(){
+        //Todo : Add the todo
+        if(!string.IsNullOrWhiteSpace(newTodo)){
+            todos.Add(new TodoItem {Title = newTodo, ID = currentID});
+            newTodo = string.Empty;
+            incrementID();
+        }
+    }
+    private void incrementID(){
+        currentID = currentID +1;
+    }
+    private void decrementID(){
+        currentID = currentID -1;
+    }
+    private void RemoveTodo(TodoItem selectedItem){
+        todos.RemoveAt(todos.ToList<TodoItem>().FindIndex(element => element.ID == selectedItem.ID));
+        decrementID();
+    }
+
+    
+}
